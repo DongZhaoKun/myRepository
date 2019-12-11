@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dzk.dao.UserPermissionMapper">
+    <resultMap id="BaseResultMap" type="com.dzk.model.UserPermission">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="pid" jdbcType="BIGINT" property="pid" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="value" jdbcType="VARCHAR" property="value" />
+        <result column="type" jdbcType="INTEGER" property="type" />
+        <result column="uri" jdbcType="VARCHAR" property="uri" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="create_time" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+    </resultMap>
+    <insert id="insert" parameterType="com.dzk.model.UserPermission" >
+        insert into user_permission
+        <trim  prefix="(" suffix=")"  suffixOverrides=",">
+            <if test="pid != null">
+                pid,
+            </if>
+            <if test="name != null and name != ''">
+                name,
+            </if>
+            <if test="value != null and value != ''">
+                value,
+            </if>
+            <if test="type != null ">
+                type,
+            </if>
+            <if test="uri != null and uri != ''">
+                uri,
+            </if>
+            <if test="create_time != null and create_time != ''">
+                create_time,
+            </if>
+            <if test="status != null ">
+                status,
+            </if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")"  suffixOverrides=",">
+            <if test="pid != null">
+                #{pid,jdbcType=BIGINT},
+            </if>
+            <if test="name != null and name != ''">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="value != null and value != ''">
+                #{value,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null ">
+                #{type,jdbcType=INTEGER},
+            </if>
+            <if test="uri != null and uri != ''">
+                #{uri,jdbcType=VARCHAR},
+            </if>
+            <if test="create_time != null and create_time != ''">
+                #{create_time,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null ">
+                #{status,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="list"  resultMap="BaseResultMap">
+        select * from user_permission  where status=0
+    </select>
+
+    <update id="update" parameterType="com.dzk.model.UserPermission">
+        update user_permission set
+        <trim suffixOverrides=",">
+            <if test="name !=null and name != ''">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="value !=null and value != ''">
+                value = #{value,jdbcType=VARCHAR},
+            </if>
+            <if test="uri !=null and uri != ''">
+                uri = #{uri,jdbcType=VARCHAR},
+            </if>
+            <if test="type !=null ">
+                type = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="status !=null ">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+        </trim>
+        where
+        id = #{id,jdbcType= BIGINT}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        delete from user_permission where id = #{id,jdbcType= BIGINT}
+    </delete>
+</mapper>

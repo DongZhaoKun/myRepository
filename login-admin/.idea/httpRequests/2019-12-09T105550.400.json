@@ -1,0 +1,5 @@
+{
+  "code": 500,
+  "message": "Invalid bound statement (not found): com.dzk.dao.UserAdminRoleDao.getPermissionList",
+  "data": null
+}

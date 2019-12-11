@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dzk.dao.UserAdminRoleDao">
+    <resultMap id="BaseResultMap" type="com.dzk.model.UserPermission">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="pid" jdbcType="BIGINT" property="pid" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="value" jdbcType="VARCHAR" property="value" />
+        <result column="icon" jdbcType="VARCHAR" property="icon" />
+        <result column="type" jdbcType="INTEGER" property="type" />
+        <result column="uri" jdbcType="VARCHAR" property="uri" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="create_time" />
+        <result column="sort" jdbcType="VARCHAR" property="sort" />
+    </resultMap>
+    <select id="getPermissionList" resultType="String" parameterType="java.lang.Long">
+        select p.value
+        FROM user_admin_role_relation ur
+        LEFT JOIN user_role_permission_relation rp on ur.role_id = rp.role_id
+        LEFT JOIN user_permission p on p.id = rp.permission_id
+        where ur.admin_id = #{id,jdbcType= BIGINT}
+    </select>
+</mapper>

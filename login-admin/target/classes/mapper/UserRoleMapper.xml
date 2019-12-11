@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dzk.dao.UserRoleMapper">
+    <resultMap id="BaseResultMap" type="com.dzk.model.UserRole">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="description" jdbcType="VARCHAR" property="description" />
+        <result column="admin_count" jdbcType="INTEGER" property="admin_count" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="sort" jdbcType="INTEGER" property="sort" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+    </resultMap>
+    <insert id="insert" parameterType="com.dzk.model.UserRole" >
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into user_role (name, description, admin_count,
+        create_time, sort, status
+        )
+        values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{admin_count,jdbcType=INTEGER},
+        #{createTime,jdbcType=TIMESTAMP}, #{sort,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}
+        )
+    </insert>
+    <select id="roleList"  resultMap="BaseResultMap">
+        select * from user_role  where status=0
+    </select>
+    <update id="update" parameterType="com.dzk.model.UserRole">
+        update user_role set
+        <trim suffixOverrides=",">
+            <if test="name !=null and name != ''">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="description !=null and description != ''">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="status !=null ">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+        </trim>
+        where
+        id = #{id,jdbcType= BIGINT}
+    </update>
+    <delete id="delete" parameterType="java.lang.Long">
+        delete from user_role where id = #{id,jdbcType= BIGINT}
+    </delete>
+</mapper>

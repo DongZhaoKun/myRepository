@@ -1,0 +1,5 @@
+{
+  "code": 500,
+  "message": "Wildcard string cannot be null or empty. Make sure permission strings are properly formatted.",
+  "data": null
+}
