@@ -1,5 +1,0 @@
-{
-  "code": 500,
-  "message": "Required request body is missing: public com.dzk.utils.CommonResult com.dzk.controller.UserAdminController.list(com.dzk.model.UserAdmin)",
-  "data": null
-}

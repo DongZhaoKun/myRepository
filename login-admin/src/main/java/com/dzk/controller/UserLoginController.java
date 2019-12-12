@@ -56,7 +56,6 @@ public class UserLoginController {
     @GetMapping("/info")
     @RequiresPermissions("sys:user:info")
     public CommonResult userInfo(){
-        Map<String,String> map = new HashMap<>();
         Map<String,String> rolemap = new HashMap<>();
         rolemap.put("roles","[\"test\"]");
         return  CommonResult.success(rolemap);
@@ -74,15 +73,8 @@ public class UserLoginController {
     @GetMapping("/test")
     @RequiresPermissions("sys:user:test")
     public CommonResult test(){
-        UserAdmin userAdmin = new UserAdmin();
-        userAdmin.setUsername("dzk");
-        userAdmin.setPassword("123");
-        String token = jwtUtil.generateToken(userAdmin);
-        System.out.println(token);
-        String username = jwtUtil.getUserNameFromToken(token);
-        System.out.println(username);
-        return  CommonResult.success(null);
 
+        return  CommonResult.success("test");
 
     }
 }

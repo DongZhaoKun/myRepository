@@ -3,6 +3,7 @@ package com.dzk.controller;
 import com.dzk.model.UserAdmin;
 import com.dzk.service.UserAdminService;
 import com.dzk.utils.CommonResult;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
