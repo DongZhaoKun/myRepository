@@ -33,7 +33,7 @@ public class UserAdminController {
     }
     @PostMapping("/edit")
     public CommonResult edit(@RequestBody UserAdmin userAdminParam){
-        System.out.println("controller : "+userAdminParam.getStatus());
+        System.out.println("controller : "+userAdminParam.getNick_name());
         int i = userAdminService.updateUser(userAdminParam);
 
         if(i != 0){

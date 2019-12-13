@@ -32,6 +32,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 
     @Override
     public Integer insert(UserRole userRole) {
+        userRole.setCreateTime(new Date());
         return userRoleMapper.insert(userRole);
     }
 
@@ -74,5 +75,10 @@ public class UserRoleServiceImpl implements UserRoleService{
         int i = 0;
         i = userRolePermissionMapper.delete(roleId);
         return i;
+    }
+
+    @Override
+    public List<UserRole> userRole(Long userId) {
+        return userRoleMapper.userRole(userId);
     }
 }

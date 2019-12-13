@@ -24,6 +24,12 @@
     <select id="roleList"  resultMap="BaseResultMap">
         select * from user_role  where status=0
     </select>
+    <select id="userRole"  resultMap="BaseResultMap">
+        select r.`description`,r.id from user_role r
+         left JOIN user_admin_role_relation ar on ar.role_id = r.id
+         left join user_admin a on a.id = ar.admin_id
+         where a.id = #{id,jdbcType=BIGINT}
+    </select>
     <update id="update" parameterType="com.dzk.model.UserRole">
         update user_role set
         <trim suffixOverrides=",">

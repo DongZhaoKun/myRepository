@@ -76,7 +76,7 @@ public class UserAdminServiceImpl implements UserAdminService {
 
     @Override
     public Integer updateUser(UserAdmin userAdmin) {
-        System.out.println("service :"+ userAdmin.getStatus());
+        System.out.println("service :"+ userAdmin.getNick_name());
         return userAdminDao.update(userAdmin);
     }
 

@@ -21,4 +21,6 @@ public interface UserRoleService {
         Integer insertRP(UserRole userRole);
 
         Integer deleteRP(Long roleId);
+
+        List<UserRole> userRole(Long userId);
 }

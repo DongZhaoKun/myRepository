@@ -82,5 +82,11 @@ public class UserRoleController {
         }
         return  CommonResult.success(i);
     }
+    @PostMapping("/userRole/{userId}")
+    public CommonResult roleListByUserId(@PathVariable("userId") Long userId){
+        System.out.println("userId = "+userId);
+        List<UserRole> userRoles = userRoleService.userRole(userId);
+        return CommonResult.success(userRoles);
+    }
 
 }

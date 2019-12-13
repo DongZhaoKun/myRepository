@@ -10,7 +10,10 @@ public interface UserRoleMapper {
 
     List<UserRole> roleList();
 
+    List<UserRole> userRole(Long id);
+
     int update(UserRole userRole);
 
     int delete(Long id);
+
 }

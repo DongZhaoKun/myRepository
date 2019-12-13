@@ -8,7 +8,7 @@
         <result column="password" jdbcType="VARCHAR" property="password" />
         <result column="icon" jdbcType="VARCHAR" property="icon" />
         <result column="email" jdbcType="VARCHAR" property="email" />
-        <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+        <result column="nick_name" jdbcType="VARCHAR" property="nick_name" />
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
         <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
         <result column="status" jdbcType="INTEGER" property="status" />
@@ -46,6 +46,9 @@
         <trim  suffixOverrides=",">
             <if test="username != null and username !=''">
                 username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="nick_name != null and username !=''">
+                nick_name = #{nick_name,jdbcType=VARCHAR},
             </if>
             <if test="password != null and password !=''">
                 password =#{password,jdbcType=VARCHAR},

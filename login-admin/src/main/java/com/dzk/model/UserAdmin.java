@@ -8,8 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-public class
-UserAdmin implements Serializable {
+public class UserAdmin implements Serializable {
     private Long id;
 
     private String username;
@@ -20,7 +19,7 @@ UserAdmin implements Serializable {
 
     private String email;
 
-    private String nickName;
+    private String nick_name;
 
     private String salt;
 
