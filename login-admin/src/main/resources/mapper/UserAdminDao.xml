@@ -22,7 +22,7 @@
         create_time, login_time, status
         )
         values (#{username,jdbcType=VARCHAR}, #{salt,jdbcType=VARCHAR},#{password,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR},
-        #{email,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR},
+        #{email,jdbcType=VARCHAR}, #{nick_name,jdbcType=VARCHAR},
         #{createTime,jdbcType=TIMESTAMP}, #{loginTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}
         )
     </insert>

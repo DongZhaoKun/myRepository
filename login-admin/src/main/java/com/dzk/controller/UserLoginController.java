@@ -53,7 +53,7 @@ public class UserLoginController {
             return  CommonResult.success(token);
     }
     @GetMapping("/info")
-    @RequiresPermissions("sys:user:info")
+//    @RequiresPermissions("sys:user:info")
     public CommonResult userInfo(){
 //        String userName = jwtUtil.getUserNameFromToken(token);
 //        UserAdmin userAdmin = userAdminService.queryByName(userName);

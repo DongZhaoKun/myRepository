@@ -1,8 +1,0 @@
-GET http://localhost:6696/sys/user/info
-Accept: */*
-Cache-Control: no-cache
-
-<> 2019-12-12T092434.200.json
-
-###
-
