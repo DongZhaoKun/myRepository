@@ -11,6 +11,7 @@ import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.crypto.hash.Md5Hash;
+import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -50,17 +51,20 @@ public class UserLoginController {
             }
             String token = jwtUtil.generateToken(userAdmin);
             return  CommonResult.success(token);
-
-
     }
     @GetMapping("/info")
     @RequiresPermissions("sys:user:info")
     public CommonResult userInfo(){
-        Map<String,String> rolemap = new HashMap<>();
-        rolemap.put("roles","[\"test\"]");
-        return  CommonResult.success(rolemap);
-
-
+//        String userName = jwtUtil.getUserNameFromToken(token);
+//        UserAdmin userAdmin = userAdminService.queryByName(userName);
+        Map<String,Object> map = new HashMap<>();
+        map.put("roles", "[test]");
+        return  CommonResult.success(map);
+    }
+    @GetMapping("/logout")
+    public CommonResult logout(){
+        SecurityUtils.getSubject().logout();
+        return  CommonResult.success(null);
     }
     @GetMapping("/401")
     @RequiresPermissions("test401")

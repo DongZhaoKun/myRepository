@@ -10,6 +10,8 @@ public interface UserAdminDao {
 
     UserAdmin queryByName(String userName);
 
+    UserAdmin queryById(Long userId);
+
     List<UserAdmin> userList(UserAdmin userAdmin);
 
     int update(UserAdmin userAdmin);

@@ -75,6 +75,7 @@ public class UserRoleController {
     }
     @PostMapping("/updateRP")
     public CommonResult updateRolePer(@RequestBody UserRole userRole){
+        System.out.println(userRole);
         int i;
         i = userRoleService.insertRP(userRole);
         if(i == 0){

@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -57,6 +58,7 @@ public class UserRoleServiceImpl implements UserRoleService{
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Integer insertRP(UserRole userRole) {
         int i = 0;
         deleteRP(userRole.getId());

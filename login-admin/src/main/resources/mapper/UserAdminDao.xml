@@ -29,6 +29,9 @@
     <select id="queryByName" resultMap="BaseResultMap" parameterType="com.dzk.model.UserAdmin">
         select * from user_admin where username = #{username}
     </select>
+    <select id="queryById" resultMap="BaseResultMap" parameterType="Long">
+        select * from user_admin where id = #{id,jdbcType=BIGINT}
+    </select>
     <select id="userList" resultMap="BaseResultMap">
         select * from user_admin
         where 1=1

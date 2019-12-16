@@ -17,6 +17,8 @@ public interface UserAdminService {
 
         UserAdmin queryByName(String userName);
 
+        UserAdmin queryById(Long userId);
+
         List<UserAdmin> userList(UserAdmin userAdmin);
 
         Integer updateUser(UserAdmin userAdmin);

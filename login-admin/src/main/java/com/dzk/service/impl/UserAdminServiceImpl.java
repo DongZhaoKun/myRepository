@@ -66,7 +66,11 @@ public class UserAdminServiceImpl implements UserAdminService {
         return userAdminDao.queryByName(userName);
     }
 
-
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public UserAdmin queryById(Long userId) {
+        return userAdminDao.queryById(userId);
+    }
 
 
     @Override
