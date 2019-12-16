@@ -49,6 +49,12 @@ export const constantRouterMap = [
         name: 'role',
         component: () => import('@/views/sys/role/index'),
         meta: {title: '角色', icon: 'product-list'}
+      },
+      {
+        path: 'permission',
+        name: 'permission',
+        component: () => import('@/views/sys/permission/index'),
+        meta: {title: '权限', icon: 'product-list'}
       }
       ]
     },

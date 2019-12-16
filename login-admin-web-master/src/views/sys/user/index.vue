@@ -131,11 +131,11 @@
         <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
             <div style="margin: 15px 0;"></div>
             <el-checkbox-group v-model="checkedRoles" @change="handleCheckedCitiesChange">
-                <el-checkbox v-for="role in roleOptions" :label="role.label" :key="role.value" >{{role.label}}</el-checkbox>
+                <el-checkbox v-for="role in roleOptions" :label="role" :key="role" >{{role}}</el-checkbox>
             </el-checkbox-group>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addUserRoledialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="editUserSub(editForm)">确 定</el-button>
+        <el-button type="primary" @click="userRoleSub(checkedRoles)">确 定</el-button>
       </span>
       </el-dialog>
     <div class="pagination-container">
@@ -154,7 +154,7 @@
 </template>
 <script>
   import {userList,addUser,editUser,deleteUser} from '@/api/user'
-  import {roleList,userRole} from '@/api/role'
+  import {roleList,userRole,insertAR} from '@/api/role'
   import {formatDate} from '@/utils/date';
   const defaultListQuery = {
     pageNum: 1,
@@ -194,9 +194,9 @@
             email:'',
             status:0,
         },
-        roleOptions:[
-          
-        ],
+        roleOptions:[],
+        checkedRoles:[],
+        roleIdOptions:[],
         statusOptions:[
           {
             label: '正常',
@@ -206,9 +206,6 @@
             label: '冻结',
             value: 1
           }
-        ],
-        checkedRoles:[
-
         ],
         listLoading: true,
         list: null,
@@ -233,23 +230,6 @@
         let date = new Date(time);
         return formatDate(date, 'yyyy-MM-dd hh:mm:ss')
       },
-      
-      formatPayType(value) {
-        if (value === 1) {
-          return '支付宝';
-        } else if (value === 2) {
-          return '微信';
-        } else {
-          return '未支付';
-        }
-      },
-      formatSourceType(value) {
-        if (value === 1) {
-          return 'APP订单';
-        } else {
-          return 'PC订单';
-        }
-      },
       formatStatus(value) {
         if (value === 0) {
           return '正常';
@@ -261,11 +241,6 @@
       },
     },
     methods: {
-        test(){
-            test().then(response =>{
-                console.log('test resp',response)
-            })
-        },
       addUserDialog(){
         this.addForm ={
             username:'',
@@ -333,14 +308,20 @@
           
       },
       addUserRoleDialog(){
-          let param = 1
+        if(this.multipleSelection==null||this.multipleSelection.length<1){
+          this.$message.warning('请选择要操作的用户');
+          return;
+        }
+        if(this.multipleSelection.length>1){
+          this.$message.warning('只能选择一项');
+          return;
+        }
+          let param = this.multipleSelection[0].id
           userRole(param).then(resp =>{
-              console.log('userRole resp',resp)
               this.checkedRoles = []
                resp.data.forEach(function(item,index){
-                  this.checkedRoles.push(item.id)
+                  this.checkedRoles.push(item.name)
               },this);
-              console.log('checkedRoles ',this.checkedRoles)
           }).catch(err =>{
               this.$message.error('获取用户已有角色失败')
           })
@@ -348,15 +329,35 @@
           roleList().then(resp =>{
               this.roleOptions = []
               resp.data.forEach(function(item,index){
-                  this.roleOptions.push({label:item.description,value:item.id})
+                  this.roleOptions.push(item.name)
+                  this.roleIdOptions.push({name:item.name,id:item.id})
               },this);
-              console.log(this.roleOptions)
           }).catch(err =>{
               this.$message.error('获取角色列表失败')
           })
       },
+      userRoleSub(val){
+        let param = []
+        val.forEach(function(item,index){
+          this.roleIdOptions.forEach(function(item1,index1){
+              if(item == item1.name){
+                param.push(item1.id)
+              }
+          },this)
+        },this)
+        let params = {roleIdList:param,id:this.multipleSelection[0].id}
+        this.addUserRoledialogVisible = false
+        insertAR(params).then(resp =>{
+          if(resp.code == 200){
+            this.$message.success('更新用户角色关系成功')
+          }
+          
+        }).catch(err =>{
+          this.$message.error('更新用户角色关系失败')
+        })
+      },
       handleCheckAllChange(val) {
-        this.checkedRoles = val ? roleOptions.value : [];
+        this.checkedRoles = val ? this.roleOptions : [];
         this.isIndeterminate = false;
       },
       handleCheckedCitiesChange(value) {
@@ -436,14 +437,7 @@
         this.listLoading = true;
           userList(this.listQuery).then(response => {
           this.listLoading = false;
-          
           this.list = response.data;
-        //   this.list.forEach(function(item,index){
-        //      if(item.status == 0){
-        //          item.status = '正常'
-        //      }
-        //   });
-          console.log('list',this.list)
           this.total = response.data.length;
         });
       },

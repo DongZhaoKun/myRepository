@@ -15,12 +15,13 @@ export function getInfo() {
   return request({
     url: '/sys/user/info',
     method: 'get',
+    // data: param
   })
 }
 
 export function logout() {
   return request({
-    url: '/admin/logout',
-    method: 'post'
+    url: '/sys/user/logout',
+    method: 'get'
   })
 }

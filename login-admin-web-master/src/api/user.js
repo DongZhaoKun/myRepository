@@ -8,12 +8,6 @@ export function userList(param) {
   })
 }
 
-export function getInfo() {
-  return request({
-    url: '/sys/user/info',
-    method: 'get',
-  })
-}
 
 export function logout() {
   return request({
