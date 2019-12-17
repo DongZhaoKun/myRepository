@@ -6,6 +6,12 @@ export function permissionList() {
     method: 'get',
   })
 }
+export function permissionListByPId(param) {
+  return request({
+    url: '/sys/user/permissionList/'+param,
+    method: 'get',
+  })
+}
 export function userRole(param) {
   return request({
     url: '/sys/user/userRole/'+param,
