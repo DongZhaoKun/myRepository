@@ -26,6 +26,16 @@ public class UserPermissionController {
         }
         return new CommonResult(200,"success",permissionsList);
     }
+    @GetMapping("/permissionList/{pid}")
+    public CommonResult listByPId(@PathVariable("pid") Long pid){
+
+        List<UserPermission> permissionsList = userPermissionService.userPermissionListByPid(pid);
+
+        if(permissionsList == null){
+            return new CommonResult(500,"fail","查询失败");
+        }
+        return new CommonResult(200,"success",permissionsList);
+    }
 
     @PostMapping("/insertPermission")
     public CommonResult insert(@RequestBody UserPermission userPermission){

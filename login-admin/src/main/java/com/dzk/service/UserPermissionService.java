@@ -12,6 +12,8 @@ public interface UserPermissionService {
 
         List<UserPermission> userPermissionList();
 
+        List<UserPermission> userPermissionListByPid(Long pid);
+
         Integer updatePermission(UserPermission userPermission);
 
         Integer deletePermission(List<UserPermission> userPermissionList);
