@@ -1,5 +1,6 @@
 package com.dzk.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.dzk.dao.UserPermissionMapper;
 import com.dzk.dao.UserRoleMapper;
 import com.dzk.model.UserPermission;
@@ -12,7 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserPermissionServiceImpl implements UserPermissionService {

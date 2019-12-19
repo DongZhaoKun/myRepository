@@ -26,6 +26,16 @@ public class UserPermissionController {
         }
         return new CommonResult(200,"success",permissionsList);
     }
+    @GetMapping("/permissionListTree")
+    public CommonResult listTree(){
+
+        List<String> permissionsList = userPermissionService.permissionListTree();
+
+        if(permissionsList == null){
+            return new CommonResult(500,"fail","查询失败");
+        }
+        return new CommonResult(200,"success",permissionsList);
+    }
     @GetMapping("/permissionList/{pid}")
     public CommonResult listByPId(@PathVariable("pid") Long pid){
 
