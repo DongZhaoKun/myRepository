@@ -26,7 +26,7 @@
           <el-button 
           type="primary"
           size="mini"
-          @click="addRoleDialog()">
+          @click="addRoleDialog">
               新增菜单
           </el-button>
       </div>
@@ -52,6 +52,9 @@
     <el-table-column  prop="value" label="权限值" >
       <template slot-scope="scope">{{scope.row.value}}</template>
     </el-table-column>
+    <el-table-column  prop="uri" label="路径" >
+      <template slot-scope="scope">{{scope.row.uri}}</template>
+    </el-table-column>
     <el-table-column prop="type" label="类型" width="80">
       <template slot-scope="scope"><el-tag effect="dark" size="mini" :type="scope.row.type== 1 ?'warning':scope.row.type==2 ?'success':'primary'">{{ scope.row.type|typeFormat }}</el-tag></template>
     </el-table-column>
@@ -68,7 +71,53 @@
           </template>
     </el-table-column>
   </el-table>
+  <el-dialog title="新增菜单" :visible.sync="dialogVisible" >
+    <el-form :model="addForm">
+      <el-form-item label="类型：" label-width="120px">
+        <el-radio-group v-model="radio" @change="radioChange()">
+          <el-radio :label="0">目录</el-radio>
+          <el-radio :label="1">菜单</el-radio>
+          <el-radio :label="2">按钮</el-radio>
+        </el-radio-group>   
+       </el-form-item>
+      <el-form-item label="名称：" label-width="120px">
+          <el-input v-model="addForm.name" ></el-input>
+      </el-form-item>
+      <el-form-item label="父级菜单：" label-width="120px" >
+        <el-input  v-model="addForm.pid" @focus="pidFocus()"></el-input>
+      </el-form-item>
+      <el-form-item label="权限值：" label-width="120px">
+          <el-input  v-model="addForm.value" ></el-input>
+      </el-form-item>
+      <el-form-item label="路径：" label-width="120px">
+          <el-input  v-model="addForm.uri" ></el-input>
+      </el-form-item>
+      <el-form-item label="状态：" label-width="120px">
+          <el-select v-model="addForm.status" placeholder="请选择角色状态">
+              <el-option v-for='item in statusOptions' :key="item.value" :label="item.label" :value='item.value' ></el-option>
+          </el-select>
+      </el-form-item>
+      </el-form>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="dialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="innerVisinnerible = true">确 定</el-button>
+    </span>
+  </el-dialog>
+  <el-dialog width="30%" title="选择父菜单"
+            :visible.sync="innerVisinnerible">
+    <el-tree
+      :data="data1"
+      :props="defaultProps"
+      accordion
+      @node-click="handleNodeClick">
+    </el-tree>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="innerVisinnerible = false">取 消</el-button>
+      <el-button type="primary" @click="nodeValue()">确 定</el-button>
+    </span>
+  </el-dialog>
 </div>
+
 </template>
 <script>
   import {permissionList,permissionListByPId} from '@/api/permission'
@@ -81,8 +130,45 @@
         listQuery: {
             username:''
         },
+        data: [{
+          label: '一级 1',
+          id: 1,
+          children: [{
+            label: '二级 1-1',
+            children: [{
+              label: '三级 1-1-1'
+            }]
+          }]
+        }],
+        data1:[],
+        defaultProps: {
+          children: 'children',
+          label: 'label',
+          id: 0,
+        },
         tableData:[],
+        dialogVisible: false,
+        innerVisinnerible: false,
         listLoading: true,
+        radio:0,
+        addForm:{
+          type:this.radio,
+          name:'',
+          pid:'一级菜单',
+          value:'',
+          uri:'',
+          status:0
+        },
+        statusOptions:[
+          {
+            label: '正常',
+            value: 0
+          },
+          {
+            label: '冻结',
+            value: 1
+          }
+        ],
         list: null,
         total: null,
         closeOrder:{
@@ -148,13 +234,63 @@
             if(item.pid == 0){
               this.$set(item,'hasChildren',true)
               permissionListByPId(item.id).then(resp =>{
-                this.$set(item,'children',resp.data)
+                if(resp.data.length >0){
+                  this.$set(item,'children',resp.data)
+                }
+                
               })
               this.tableData.push(item)
             }
           },this)
           console.log('list',this.tableData)
         });
+      },
+      addRoleDialog(){
+        this.dialogVisible = true
+      },
+      radioChange(){
+        console.log("radioChange",this.radio)
+      },
+      handleNodeClick(data) {
+        console.log('handleNodeClick',data);
+        // permissionListByPId(data.id).then(resp =>{
+        //         resp.data.forEach(function(item,index){
+        //             this.$set(item,'label',item.name)
+        //             this.$set(item,'children',resp.data)
+        //         },this)
+               
+          // })
+      },
+      nodeValue(){
+
+      },
+      pidFocus(){
+        this.innerVisinnerible = true
+        // this.data1 = [{label:'一级目录',id:0,children:[]}]
+        permissionList().then(response =>{
+          response.data.forEach(function(item,index){
+            
+            if(item.pid == 0){
+              
+              this.$set(item,'label',item.name)
+              permissionListByPId(item.id).then(resp =>{
+                resp.data.forEach(function(item1,index){
+                  this.$set(item1,'label',item1.name)
+                  permissionListByPId(item1.id).then(respon =>{
+                    respon.data.forEach(function(item2,index){
+                      this.$set(item2,'label',item2.name)
+                    },this)
+                    this.$set(item1,'children',respon.data)
+                  })
+                },this)
+                this.$set(item,'children',resp.data)
+              })
+              this.data1.push(item)
+            }
+            
+          },this)
+          console.log('data1',this.data1)
+        })
       },
       handleSelectionChange(){
 
