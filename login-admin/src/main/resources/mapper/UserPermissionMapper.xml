@@ -29,7 +29,7 @@
             <if test="uri != null and uri != ''">
                 uri,
             </if>
-            <if test="create_time != null and create_time != ''">
+            <if test="create_time != null ">
                 create_time,
             </if>
             <if test="status != null ">
@@ -53,7 +53,7 @@
             <if test="uri != null and uri != ''">
                 #{uri,jdbcType=VARCHAR},
             </if>
-            <if test="create_time != null and create_time != ''">
+            <if test="create_time != null ">
                 #{create_time,jdbcType=TIMESTAMP},
             </if>
             <if test="status != null ">

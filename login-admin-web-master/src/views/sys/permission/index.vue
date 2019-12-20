@@ -71,7 +71,7 @@
           </template>
     </el-table-column>
   </el-table>
-  <el-dialog title="新增菜单" :visible.sync="dialogVisible" >
+  <el-dialog title="新增权限" :visible.sync="dialogVisible" >
     <el-form :model="addForm">
       <el-form-item label="类型：" label-width="120px">
         <el-radio-group v-model="radio" @change="radioChange()">
@@ -84,7 +84,7 @@
           <el-input v-model="addForm.name" ></el-input>
       </el-form-item>
       <el-form-item label="父级菜单：" label-width="120px" >
-        <el-input  v-model="addForm.pid" @focus="pidFocus()"></el-input>
+        <el-input  v-model="pidObj.name" @focus="pidFocus()"></el-input>
       </el-form-item>
       <el-form-item label="权限值：" label-width="120px">
           <el-input  v-model="addForm.value" ></el-input>
@@ -100,7 +100,39 @@
       </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="innerVisinnerible = true">确 定</el-button>
+      <el-button type="primary" @click="addSub(addForm)">确 定</el-button>
+    </span>
+  </el-dialog>
+  <el-dialog title="编辑权限" :visible.sync="editdialogVisible" >
+    <el-form :model="editForm">
+      <el-form-item label="类型：" label-width="120px">
+        <el-radio-group v-model="radio" @change="radioChange()">
+          <el-radio :label="0">目录</el-radio>
+          <el-radio :label="1">菜单</el-radio>
+          <el-radio :label="2">按钮</el-radio>
+        </el-radio-group>   
+       </el-form-item>
+      <el-form-item label="名称：" label-width="120px">
+          <el-input v-model="editForm.name" ></el-input>
+      </el-form-item>
+      <el-form-item label="父级菜单：" label-width="120px" >
+        <el-input  v-model="pidObj.name" @focus="pidFocus()"></el-input>
+      </el-form-item>
+      <el-form-item label="权限值：" label-width="120px">
+          <el-input  v-model="editForm.value" ></el-input>
+      </el-form-item>
+      <el-form-item label="路径：" label-width="120px">
+          <el-input  v-model="editForm.uri" ></el-input>
+      </el-form-item>
+      <el-form-item label="状态：" label-width="120px">
+          <el-select v-model="editForm.status" placeholder="请选择角色状态">
+              <el-option v-for='item in statusOptions' :key="item.value" :label="item.label" :value='item.value' ></el-option>
+          </el-select>
+      </el-form-item>
+      </el-form>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="editdialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="editSub(editForm)">确 定</el-button>
     </span>
   </el-dialog>
   <el-dialog width="30%" title="选择父菜单"
@@ -113,14 +145,14 @@
     </el-tree>
     <span slot="footer" class="dialog-footer">
       <el-button @click="innerVisinnerible = false">取 消</el-button>
-      <el-button type="primary" @click="nodeValue()">确 定</el-button>
+      <el-button type="primary" @click="innerVisinnerible = false">确 定</el-button>
     </span>
   </el-dialog>
 </div>
 
 </template>
 <script>
-  import {permissionList,permissionListByPId} from '@/api/permission'
+  import {permissionList,permissionListByPId,addPermission} from '@/api/permission'
   import {formatDate} from '@/utils/date';
   export default {
     name: "permissionList",
@@ -148,17 +180,28 @@
         },
         tableData:[],
         dialogVisible: false,
+        editdialogVisible: false,
         innerVisinnerible: false,
         listLoading: true,
         radio:0,
         addForm:{
           type:this.radio,
           name:'',
-          pid:'一级菜单',
+          pid:0,
           value:'',
           uri:'',
           status:0
         },
+        editForm:{
+          id:'',
+          type:this.radio,
+          name:'',
+          pid:0,
+          value:'',
+          uri:'',
+          status:0
+        },
+        pidObj:{id:0,name:'一级目录'},
         statusOptions:[
           {
             label: '正常',
@@ -227,6 +270,7 @@
         }, 1000)
       },
       getList() {
+        this.tableData = [];
         this.listLoading = true;
           permissionList().then(response => {
           this.listLoading = false;
@@ -253,20 +297,30 @@
       },
       handleNodeClick(data) {
         console.log('handleNodeClick',data);
-        // permissionListByPId(data.id).then(resp =>{
-        //         resp.data.forEach(function(item,index){
-        //             this.$set(item,'label',item.name)
-        //             this.$set(item,'children',resp.data)
-        //         },this)
-               
-          // })
+        this.pidObj.id = data.id
+        this.pidObj.name = data.name
+        console.log('addForm',this.addForm)
+        
       },
-      nodeValue(){
-
+      addSub(val){
+        this.dialogVisible = false
+        this.addForm.type = this.radio
+        this.addForm.pid = this.pidObj.id
+        console.log(this.addForm)
+        addPermission(this.addForm).then(resp =>{
+            if(resp.code == 200){
+              this.$message.success('新增权限成功')
+              this.getList()
+            }else{
+              this.$message.info(resp.message)
+            }
+        }).catch(err =>{
+          this.$message.error('新增权限失败')
+        })
       },
       pidFocus(){
         this.innerVisinnerible = true
-        // this.data1 = [{label:'一级目录',id:0,children:[]}]
+        this.data1 = []
         permissionList().then(response =>{
           response.data.forEach(function(item,index){
             
@@ -276,12 +330,12 @@
               permissionListByPId(item.id).then(resp =>{
                 resp.data.forEach(function(item1,index){
                   this.$set(item1,'label',item1.name)
-                  permissionListByPId(item1.id).then(respon =>{
-                    respon.data.forEach(function(item2,index){
-                      this.$set(item2,'label',item2.name)
-                    },this)
-                    this.$set(item1,'children',respon.data)
-                  })
+                  // permissionListByPId(item1.id).then(respon =>{
+                  //   respon.data.forEach(function(item2,index){
+                  //     this.$set(item2,'label',item2.name)
+                  //   },this)
+                  //   this.$set(item1,'children',respon.data)
+                  // })
                 },this)
                 this.$set(item,'children',resp.data)
               })
@@ -291,6 +345,18 @@
           },this)
           console.log('data1',this.data1)
         })
+      },
+      editPermission(val){
+        this.editdialogVisible = true
+        console.log(val)
+        this.editForm.id = val.id
+        this.pidObj.pid = val.pid
+        this.pidObj.name = val.name
+        this.editForm.name = val.name
+        this.radio = val.type
+        this.editForm.value = val.value
+        this.editForm.uri = val.uri
+        this.editForm.status = val.status
       },
       handleSelectionChange(){
 

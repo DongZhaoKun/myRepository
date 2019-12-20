@@ -19,9 +19,9 @@ export function userRole(param) {
     // data: param
   })
 }
-export function addRole(param) {
+export function addPermission(param) {
   return request({
-    url: '/sys/user/insertRole',
+    url: '/sys/user/insertPermission',
     method: 'post',
     data: param || {}
   })

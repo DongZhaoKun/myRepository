@@ -13,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class UserPermissionServiceImpl implements UserPermissionService {
@@ -30,6 +27,7 @@ public class UserPermissionServiceImpl implements UserPermissionService {
 
     @Override
     public Integer insert(UserPermission userPermission) {
+        userPermission.setCreate_time(new Date());
         return userPermissionMapper.insert(userPermission);
     }
 
