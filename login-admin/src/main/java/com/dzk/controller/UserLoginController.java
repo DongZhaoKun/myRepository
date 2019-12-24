@@ -1,6 +1,7 @@
 package com.dzk.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.dzk.commonent.SysLog;
 import com.dzk.model.UserAdmin;
 import com.dzk.service.UserAdminService;
 import com.dzk.shiro.JWTToken;
@@ -37,6 +38,7 @@ public class UserLoginController {
         }
         return  CommonResult.success("注册成功");
     }
+    @SysLog("登陆")
     @PostMapping("/login")
     public CommonResult login(@RequestBody UserAdmin userAdminParam){
 
