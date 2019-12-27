@@ -22,9 +22,9 @@ public class UserPermissionController {
         List<UserPermission> permissionsList = userPermissionService.userPermissionList();
 
         if(permissionsList == null){
-            return new CommonResult(500,"fail","查询失败");
+            return  CommonResult.failed("查询失败");
         }
-        return new CommonResult(200,"success",permissionsList);
+        return  CommonResult.success(permissionsList);
     }
 
     @GetMapping("/permissionList/{pid}")
@@ -33,9 +33,20 @@ public class UserPermissionController {
         List<UserPermission> permissionsList = userPermissionService.userPermissionListByPid(pid);
 
         if(permissionsList == null){
-            return new CommonResult(500,"fail","查询失败");
+            return CommonResult.failed("查询失败");
         }
-        return new CommonResult(200,"success",permissionsList);
+        return CommonResult.success(permissionsList);
+    }
+
+    @GetMapping("/permission/{id}")
+    public CommonResult listById(@PathVariable("id") Long id){
+
+        UserPermission permission = userPermissionService.userPermissionListById(id);
+
+        if(permission == null){
+            return CommonResult.failed("查询失败");
+        }
+        return CommonResult.success(permission);
     }
 
     @PostMapping("/insertPermission")
@@ -44,13 +55,13 @@ public class UserPermissionController {
         try{
              i = userPermissionService.insert(userPermission);
             if(i != 1){
-                return new CommonResult(200,"success","无数据");
+                return  CommonResult.success("无数据",null);
             }
         }catch (Exception e){
             e.printStackTrace();
-            return new CommonResult(500,"faild",e.getMessage());
+            return  CommonResult.failed(e.getMessage(),null);
         }
-        return new CommonResult(200,"success",i);
+        return  CommonResult.success(i);
 
     }
     @PostMapping("/editPermission")
@@ -59,13 +70,13 @@ public class UserPermissionController {
         try{
             i = userPermissionService.updatePermission(userPermission);
             if(i != 1){
-                return new CommonResult(200,"success","修改失败");
+                return  CommonResult.failed("修改失败",null);
             }
         }catch (Exception e){
             e.printStackTrace();
-            return new CommonResult(500,"faild",e.getMessage());
+            return  CommonResult.failed(e.getMessage(),null);
         }
-        return new CommonResult(200,"success",i);
+        return  CommonResult.success(i);
     }
     @PostMapping("/deletePermission")
     public CommonResult delete(@RequestBody List<UserPermission> userPermissionList){
@@ -73,12 +84,12 @@ public class UserPermissionController {
         try{
             i = userPermissionService.deletePermission(userPermissionList);
             if(i == 0){
-                return new CommonResult(200,"success","删除失败");
+                return  CommonResult.failed("删除失败",null);
             }
         }catch (Exception e){
             e.printStackTrace();
-            return new CommonResult(500,"faild",e.getMessage());
+            return  CommonResult.failed(e.getMessage(),null);
         }
-        return new CommonResult(200,"success",i);
+        return  CommonResult.success(i);
     }
 }

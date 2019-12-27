@@ -43,6 +43,12 @@ public class UserPermissionServiceImpl implements UserPermissionService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    public UserPermission userPermissionListById(Long id) {
+        return userPermissionMapper.listById(id);
+    }
+
+    @Override
     public Integer updatePermission(UserPermission userPermission) {
         return userPermissionMapper.update(userPermission);
     }

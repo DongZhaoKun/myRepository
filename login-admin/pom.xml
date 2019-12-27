@@ -106,8 +106,36 @@
 	<plugins>
 	<!-- spring-boot-maven-plugin插件就是打包spring boot应用的 -->
 		<plugin>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-maven-plugin</artifactId>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-maven-plugin</artifactId>
+	</plugin>
+		<!--使用Maven插件构建Docker镜像-->
+		<plugin>
+			<groupId>com.spotify</groupId>
+			<artifactId>docker-maven-plugin</artifactId>
+			<version>1.0.0</version>
+			<executions>
+				<execution>
+					<id>build-image</id>
+					<phase>package</phase>
+					<goals>
+						<goal>build</goal>
+					</goals>
+				</execution>
+			</executions>
+			<configuration>
+				<imageName>login/${project.artifactId}:${project.version}</imageName>
+				<dockerHost>http://111.229.30.68:2375</dockerHost>
+				<baseImage>java:8</baseImage>
+				<entryPoint>["java", "-jar","/${project.build.finalName}.jar"]</entryPoint>
+				<resources>
+					<resource>
+						<targetPath>/</targetPath>
+						<directory>${project.build.directory}</directory>
+						<include>${project.build.finalName}.jar</include>
+					</resource>
+				</resources>
+			</configuration>
 		</plugin>
 		<!-- 指定JDK编译版本 -->
 		<plugin>

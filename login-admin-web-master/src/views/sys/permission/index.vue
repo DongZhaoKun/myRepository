@@ -18,7 +18,7 @@
       <div style="margin-top: 15px">
         <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
           <el-form-item label="输入搜索：">
-            <el-input v-model="listQuery.username" class="input-width" placeholder="用户名"></el-input>
+            <el-input v-model="listQuery.name" class="input-width" placeholder="权限名"></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -106,7 +106,7 @@
   <el-dialog title="编辑权限" :visible.sync="editdialogVisible" >
     <el-form :model="editForm">
       <el-form-item label="类型：" label-width="120px">
-        <el-radio-group v-model="radio" @change="radioChange()">
+        <el-radio-group v-model="editradio" @change="editradioChange()">
           <el-radio :label="0">目录</el-radio>
           <el-radio :label="1">菜单</el-radio>
           <el-radio :label="2">按钮</el-radio>
@@ -138,7 +138,7 @@
   <el-dialog width="30%" title="选择父菜单"
             :visible.sync="innerVisinnerible">
     <el-tree
-      :data="data1"
+      :data="data"
       :props="defaultProps"
       accordion
       @node-click="handleNodeClick">
@@ -152,7 +152,7 @@
 
 </template>
 <script>
-  import {permissionList,permissionListByPId,addPermission} from '@/api/permission'
+  import {permissionList,permissionListByPId,addPermission,editPermission,permissionListById,deletePermission} from '@/api/permission'
   import {formatDate} from '@/utils/date';
   export default {
     name: "permissionList",
@@ -160,19 +160,9 @@
     data() {
       return {
         listQuery: {
-            username:''
+            name:''
         },
-        data: [{
-          label: '一级 1',
-          id: 1,
-          children: [{
-            label: '二级 1-1',
-            children: [{
-              label: '三级 1-1-1'
-            }]
-          }]
-        }],
-        data1:[],
+        data:[],
         defaultProps: {
           children: 'children',
           label: 'label',
@@ -184,6 +174,7 @@
         innerVisinnerible: false,
         listLoading: true,
         radio:0,
+        editradio:0,
         addForm:{
           type:this.radio,
           name:'',
@@ -295,12 +286,15 @@
       radioChange(){
         console.log("radioChange",this.radio)
       },
+      editradioChange(){
+        console.log("radioChange",this.editradio)
+        this.editForm.type = this.editradio
+      },
       handleNodeClick(data) {
         console.log('handleNodeClick',data);
         this.pidObj.id = data.id
         this.pidObj.name = data.name
-        console.log('addForm',this.addForm)
-        
+        this.editForm.pid = this.pidObj.id
       },
       addSub(val){
         this.dialogVisible = false
@@ -320,7 +314,7 @@
       },
       pidFocus(){
         this.innerVisinnerible = true
-        this.data1 = []
+        this.data = []
         permissionList().then(response =>{
           response.data.forEach(function(item,index){
             
@@ -339,24 +333,69 @@
                 },this)
                 this.$set(item,'children',resp.data)
               })
-              this.data1.push(item)
+              this.data.push(item)
             }
             
           },this)
-          console.log('data1',this.data1)
+          console.log('data',this.data)
         })
       },
       editPermission(val){
+        if(val.pid == 0){
+          this.pidObj.id = 0
+          this.pidObj.name = '一级目录'
+        }else{
+          permissionListById(val.pid).then(resp =>{
+            console.log('编辑权限',resp.data)
+            this.pidObj.id = resp.data.id 
+            console.log('编辑权限pid',this.pidObj.id)
+            this.pidObj.name = resp.data.name
+          })
+        }
+       
         this.editdialogVisible = true
         console.log(val)
         this.editForm.id = val.id
-        this.pidObj.pid = val.pid
-        this.pidObj.name = val.name
+        this.editForm.pid = val.pid
         this.editForm.name = val.name
-        this.radio = val.type
+        
+        this.editradio = val.type
+        this.editForm.type = this.editradio
         this.editForm.value = val.value
         this.editForm.uri = val.uri
         this.editForm.status = val.status
+        
+      },
+      editSub(val){
+        this.editdialogVisible = false
+        console.log('editForm',val)
+        editPermission(val).then(resp =>{
+          if(resp.code == 200){
+            this.$message.success('编辑成功')
+          }
+        }).catch(err =>{
+          this.$message.error('编辑失败')
+        })
+      },
+      deletePermission(val){
+          this.$confirm('是否要进行该删除操作?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => { 
+            let param =[{
+              id : val.id
+          }]
+          deletePermission(param).then(resp =>{
+              if(resp.code == 200){
+                  this.$message.success('删除成功')
+                  this.getList()
+              }
+              
+          })
+        }).catch(() => {
+            this.$message.info('已取消删除')
+        })
       },
       handleSelectionChange(){
 

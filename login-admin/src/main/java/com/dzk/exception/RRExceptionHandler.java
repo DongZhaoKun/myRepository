@@ -48,14 +48,14 @@ public class RRExceptionHandler {
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)
 	@ExceptionHandler(ShiroException.class)
 	public CommonResult handle401(ShiroException e) {
-		return new CommonResult(401, e.getMessage(), null);
+		return  CommonResult.unauthorized(e.getMessage(), null);
 	}
 
 	// 捕捉UnauthorizedException
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)
 	@ExceptionHandler(AuthorizationException.class)
 	public CommonResult handle401() {
-		return new CommonResult(401, "权限不足，请联系系统管理员！", null);
+		return  CommonResult.unauthorized( "权限不足，请联系系统管理员！", null);
 	}
 
 	// 捕捉其他所有异常
@@ -63,7 +63,7 @@ public class RRExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public CommonResult globalException(HttpServletRequest request, Throwable ex) {
 		ex.printStackTrace();
-		return new CommonResult(getStatus(request).value(), ex.getMessage(), null);
+		return   CommonResult.failed( ex.getMessage(), null);
 	}
 
 	private HttpStatus getStatus(HttpServletRequest request) {

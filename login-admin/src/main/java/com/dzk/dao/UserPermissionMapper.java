@@ -13,6 +13,8 @@ public interface UserPermissionMapper {
 
     List<UserPermission> listByPid(Long pid);
 
+    UserPermission listById(Long id);
+
     int update(UserPermission userPermission);
 
     int delete(Long id);

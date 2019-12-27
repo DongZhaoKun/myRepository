@@ -12,6 +12,12 @@ export function permissionListByPId(param) {
     method: 'get',
   })
 }
+export function permissionListById(param) {
+  return request({
+    url: '/sys/user/permission/'+param,
+    method: 'get',
+  })
+}
 export function userRole(param) {
   return request({
     url: '/sys/user/userRole/'+param,
@@ -26,23 +32,17 @@ export function addPermission(param) {
     data: param || {}
   })
 }
-export function editRole(param) {
+export function editPermission(param) {
   return request({
-    url: '/sys/user/editRole',
+    url: '/sys/user/editPermission',
     method: 'post',
     data: param || {}
   })
 }
-export function deleteRole(param) {
+
+export function deletePermission(param) {
   return request({
-    url: '/sys/user/deleteRole',
-    method: 'post',
-    data: param || {}
-  })
-}
-export function insertAR(param) {
-  return request({
-    url: '/sys/user/insertAR',
+    url: '/sys/user/deletePermission',
     method: 'post',
     data: param || {}
   })

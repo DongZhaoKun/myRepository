@@ -70,6 +70,10 @@
         select * from user_permission  where status=0 and pid=#{pid,jdbcType=BIGINT}
     </select>
 
+    <select id="listById"  resultMap="BaseResultMap" parameterType="LONG">
+        select * from user_permission  where status=0 and id=#{id,jdbcType=BIGINT}
+    </select>
+
     <update id="update" parameterType="com.dzk.model.UserPermission">
         update user_permission set
         <trim suffixOverrides=",">
