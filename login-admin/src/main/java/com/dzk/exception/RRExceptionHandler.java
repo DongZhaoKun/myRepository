@@ -31,19 +31,6 @@ public class RRExceptionHandler {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 
-
-//	@ExceptionHandler(AuthorizationException.class)
-//	public CommonResult handleAuthorizationException(AuthorizationException e){
-//		logger.error(e.getMessage(), e);
-//		return CommonResult.unauthorized(e.getMessage());
-//	}
-//
-//	@ExceptionHandler(Exception.class)
-//	public CommonResult handleException(Exception e){
-//		logger.error(e.getMessage(), e);
-//		return CommonResult.failed(e.getMessage());
-//	}
-
 	// 捕捉shiro的异常
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)
 	@ExceptionHandler(ShiroException.class)

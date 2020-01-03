@@ -70,6 +70,14 @@
         select * from user_permission  where status=0 and pid=#{pid,jdbcType=BIGINT}
     </select>
 
+    <select id="listByRoleId"  resultMap="BaseResultMap" parameterType="LONG">
+        select up.id,up.name,up.pid,up.value,up.type,up.uri,up.status,up.sort
+        from user_permission up
+        left join user_role_permission_relation rp on rp.permission_id = up.id
+        left join user_role ur on ur.id = rp.role_id
+        where ur.id = #{id,jdbcType=BIGINT}
+    </select>
+
     <select id="listById"  resultMap="BaseResultMap" parameterType="LONG">
         select * from user_permission  where status=0 and id=#{id,jdbcType=BIGINT}
     </select>

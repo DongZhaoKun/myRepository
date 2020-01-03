@@ -35,7 +35,7 @@
            <el-button 
           type="primary"
           size="mini"
-          @click="addRolePermissionDialog()">
+          @click="handleRolePermissionOperate()">
               角色授权
           </el-button>
       </div>
@@ -120,11 +120,12 @@
       <el-dialog title="角色授权"
       :visible.sync="rolePermissiondialogVisible" >
         <el-tree
-          :data="data1"
+          :data="data"
           show-checkbox
           node-key="id"
-          :default-expanded-keys="[2, 3]"
-          :default-checked-keys="[5]"
+          ref="tree"
+          :default-expand-all="true"
+          :default-checked-keys="checkedKeys"
           :props="defaultProps">
         </el-tree>
       <span slot="footer" class="dialog-footer">
@@ -147,8 +148,8 @@
   </div>
 </template>
 <script>
-  import {roleList,addRole,editRole,deleteRole} from '@/api/role'
-  import {permissionList,permissionListByPId,permissionListById} from '@/api/permission'
+  import {roleList,addRole,editRole,deleteRole,updateRP} from '@/api/role'
+  import {permissionList,permissionListByRoleId,permissionListByPId} from '@/api/permission'
   import {formatDate} from '@/utils/date';
   const defaultListQuery = {
     pageNum: 1,
@@ -184,51 +185,13 @@
             email:'',
             status:0,
         },
-        props: {
-          label: 'name',
-          children: 'zones',
-          isLeaf: 'leaf'
-        },
-        data1:[],
-         data: [{
-          id: 1,
-          label: '一级 1',
-          children: [{
-            id: 4,
-            label: '二级 1-1',
-            children: [{
-              id: 9,
-              label: '三级 1-1-1'
-            }, {
-              id: 10,
-              label: '三级 1-1-2'
-            }]
-          }]
-        }, {
-          id: 2,
-          label: '一级 2',
-          children: [{
-            id: 5,
-            label: '二级 2-1'
-          }, {
-            id: 6,
-            label: '二级 2-2'
-          }]
-        }, {
-          id: 3,
-          label: '一级 3',
-          children: [{
-            id: 7,
-            label: '二级 3-1'
-          }, {
-            id: 8,
-            label: '二级 3-2'
-          }]
-        }],
+        data: [],
         defaultProps: {
           children: 'children',
-          label: 'label'
+          label: 'name'
         },
+        expandedKeys:[1,2,3,4,5,15],
+        checkedKeys:[],
         statusOptions:[
           {
             label: '正常',
@@ -262,38 +225,17 @@
         let date = new Date(time);
         return formatDate(date, 'yyyy-MM-dd hh:mm:ss')
       },
-      formatPayType(value) {
-        if (value === 1) {
-          return '支付宝';
-        } else if (value === 2) {
-          return '微信';
-        } else {
-          return '未支付';
-        }
-      },
-      formatSourceType(value) {
-        if (value === 1) {
-          return 'APP订单';
-        } else {
-          return 'PC订单';
-        }
-      },
       formatStatus(value) {
         if (value === 0) {
           return '正常';
         } else if (value === 1) {
           return '冻结';
-        }  else {
+        } else {
           return '未知';
         }
       },
     },
     methods: {
-        test(){
-            test().then(response =>{
-                console.log('test resp',response)
-            })
-        },
       addRoleDialog(){
         this.addForm ={
             name:'',
@@ -351,21 +293,6 @@
         })
           
       },
-      addRolePermissionDialog(){
-        this.rolePermissiondialogVisible = true 
-        permissionList().then(resp =>{
-            console.log('permission',resp.data)
-            resp.data.forEach(function(item,index){
-              if(item.pid == 0){
-                this.$set(item,'label',item.name)
-                this.data1.push(item)
-               
-              }
-            },this)
-          })
-        
-      },
-      
       handleResetSearch() {
         this.listQuery = Object.assign({}, defaultListQuery);
       },
@@ -382,47 +309,70 @@
         ids.push(row.id);
         this.deleteOrder(ids);
       },
-      handleBatchOperate(){
+      handleRolePermissionOperate(){
         if(this.multipleSelection==null||this.multipleSelection.length<1){
           this.$message({
-            message: '请选择要操作的订单',
+            message: '请选择要操作的角色',
             type: 'warning',
             duration: 1000
           });
           return;
-        }
-        if(this.operateType===1){
-          //批量发货
-          let list=[];
-          for(let i=0;i<this.multipleSelection.length;i++){
-            if(this.multipleSelection[i].status===1){
-              list.push(this.covertOrder(this.multipleSelection[i]));
-            }
-          }
-          if(list.length===0){
-            this.$message({
-              message: '选中订单中没有可以发货的订单',
-              type: 'warning',
-              duration: 1000
+        }else if(this.multipleSelection.length > 1){
+            this.$message.warning('只能选择一项')
+        }else{
+          this.rolePermissiondialogVisible = true
+          console.log('multipleSelection',this.multipleSelection)
+          this.data = []
+          
+          console.log('multipleSelection',this.multipleSelection)
+          permissionListByRoleId(this.multipleSelection[0].id).then(resp =>{
+            console.log('permissionListByRoleId',resp.data)
+            resp.data.forEach((item,index) =>{
+              this.checkedKeys.push(item.id)
             });
-            return;
-          }
-          this.$router.push({path:'/oms/deliverOrderList',query:{list:list}})
-        }else if(this.operateType===2){
-          //关闭订单
-          this.closeOrder.orderIds=[];
-          for(let i=0;i<this.multipleSelection.length;i++){
-            this.closeOrder.orderIds.push(this.multipleSelection[i].id);
-          }
-          this.closeOrder.dialogVisible=true;
-        }else if(this.operateType===3){
-          //删除订单
-          let ids=[];
-          for(let i=0;i<this.multipleSelection.length;i++){
-            ids.push(this.multipleSelection[i].id);
-          }
-          this.deleteOrder(ids);
+            console.log('checkedKeys',this.checkedKeys)
+          })
+          this.getTreeData()
         }
+          
+      },
+      getTreeData(){
+         
+        permissionList().then(resp =>{
+          let arr = resp.data;
+          console.log(this.arrayToTree(arr,0))
+          this.data = this.arrayToTree(arr,0)
+         
+        })
+       
+      },
+      arrayToTree(arr, pid) {
+            let temp = [];
+            let treeArr = arr;
+            treeArr.forEach((item, index) => {
+                if (item.pid == pid) {
+                    if (this.arrayToTree(treeArr, treeArr[index].id).length > 0) {
+                         // 递归调用此函数
+                      treeArr[index].children = this.arrayToTree(treeArr, treeArr[index].id);
+                    }
+                    temp.push(treeArr[index]);
+                }
+           });
+           return temp;
+         console.log('data',temp)
+      },
+      rolePermissionSub(){
+        this.rolePermissiondialogVisible = false
+        console.log('getCheckedKeys', this.$refs.tree.getCheckedKeys())
+        var param = {"permIdList":this.$refs.tree.getCheckedKeys(),id:this.multipleSelection[0].id}
+        updateRP(param).then(resp =>{
+          if(resp.code == 200){
+            this.$message.success('更新角色权限成功')
+          }
+        }).catch(err =>{
+          this.$message.error('更新角色权限失败')
+        })
+
       },
       handleSizeChange(val){
         this.listQuery.pageNum = 1;

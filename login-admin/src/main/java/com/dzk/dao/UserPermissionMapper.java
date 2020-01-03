@@ -11,6 +11,8 @@ public interface UserPermissionMapper {
 
     List<UserPermission> list();
 
+    List<UserPermission> listByRoleId(Long roleId);
+
     List<UserPermission> listByPid(Long pid);
 
     UserPermission listById(Long id);

@@ -1,6 +1,7 @@
 package com.dzk.controller;
 
 import com.dzk.model.UserPermission;
+import com.dzk.model.UserPermissionNode;
 import com.dzk.model.UserRole;
 import com.dzk.service.UserPermissionService;
 import com.dzk.service.UserRoleService;
@@ -27,6 +28,11 @@ public class UserPermissionController {
         return  CommonResult.success(permissionsList);
     }
 
+    /**
+     * 根据父id查询子权限列表
+     * @param pid
+     * @return
+     */
     @GetMapping("/permissionList/{pid}")
     public CommonResult listByPId(@PathVariable("pid") Long pid){
 
@@ -38,6 +44,26 @@ public class UserPermissionController {
         return CommonResult.success(permissionsList);
     }
 
+    /**
+     * 返回权限树状数据
+     * @param
+     * @return
+     */
+    @GetMapping("/permission/treeList")
+    public CommonResult listTree(){
+
+        List<UserPermissionNode> list = userPermissionService.listTree();
+
+        if(list == null){
+            return CommonResult.failed("查询失败");
+        }
+        return CommonResult.success(list);
+    }
+    /**
+     * 根据id查询权限
+     * @param id
+     * @return
+     */
     @GetMapping("/permission/{id}")
     public CommonResult listById(@PathVariable("id") Long id){
 
@@ -47,6 +73,22 @@ public class UserPermissionController {
             return CommonResult.failed("查询失败");
         }
         return CommonResult.success(permission);
+    }
+
+    /**
+     * 根据角色id查询权限列表
+     * @param id
+     * @return
+     */
+    @GetMapping("/permissionByRoleId/{id}")
+    public CommonResult listByRoleId(@PathVariable("id") Long id){
+
+        List<UserPermission> permissionsList = userPermissionService.userPermissionListByRoleId(id);
+
+        if(permissionsList == null){
+            return CommonResult.failed("查询失败");
+        }
+        return CommonResult.success(permissionsList);
     }
 
     @PostMapping("/insertPermission")

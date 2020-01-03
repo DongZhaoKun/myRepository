@@ -27,7 +27,7 @@
           type="primary"
           size="mini"
           @click="addRoleDialog">
-              新增菜单
+              新增权限
           </el-button>
       </div>
     </el-card>

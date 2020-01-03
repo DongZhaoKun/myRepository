@@ -8,6 +8,7 @@ import com.dzk.model.UserRole;
 import com.dzk.model.UserRolePermission;
 import com.dzk.service.SysLogService;
 import com.dzk.service.UserRoleService;
+import com.github.pagehelper.PageHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,12 @@ public class SysLogServiceImpl implements SysLogService{
 
     @Autowired
     private SysLogMapper sysLogMapper;
+
+    @Override
+    public List<SysLog> sysLogList(String  operation,Integer pageNum,Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        return sysLogMapper.logList(operation);
+    }
 
     @Override
     public Integer insert(SysLog sysLog) {

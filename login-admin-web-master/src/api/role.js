@@ -41,3 +41,10 @@ export function insertAR(param) {
     data: param || {}
   })
 }
+export function updateRP(param) {
+  return request({
+    url: '/sys/user/updateRP',
+    method: 'post',
+    data: param || {}
+  })
+}

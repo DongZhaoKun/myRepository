@@ -7,7 +7,7 @@
         <result column="operation" jdbcType="VARCHAR" property="operation" />
         <result column="method" jdbcType="VARCHAR" property="method" />
         <result column="params" jdbcType="VARCHAR" property="params" />
-        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="create_time" />
         <result column="time" jdbcType="BIGINT" property="time" />
         <result column="ip" jdbcType="VARCHAR" property="ip" />
     </resultMap>
@@ -23,16 +23,14 @@
     </insert>
 
     <select id="logList" resultMap="BaseResultMap">
-        select * from user_admin
-        where 1=1
-        <trim suffixOverrides=",">
-        <if test="username != null and username !=''">
-           and username = #{username,jdbcType=VARCHAR},
-        </if>
-        <if test="status != null and status !=''">
-           and username = #{status,jdbcType=INTEGER}
-        </if>
-        </trim>
+        select * from sys_log
+        <where>
+            <trim suffixOverrides=",">
+                <if test="operation != null and operation !=''">
+                    operation like CONCAT('%',#{operation,jdbcType=VARCHAR},'%')
+                </if>
+            </trim>
+        </where>
     </select>
 
 </mapper>

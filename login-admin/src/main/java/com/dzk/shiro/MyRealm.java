@@ -64,7 +64,7 @@ public class MyRealm extends AuthorizingRealm {
         String username = jwtUtil.getUserNameFromToken(token);
         System.out.println("MyRealm username : "+ username);
         if (username == null) {
-            throw new AuthenticationException("token invalid");
+            throw new AuthenticationException("token 校验失败，请重新登陆");
         }
         UserAdmin userAdmin = userAdminService.queryByName(username);
         System.out.println("useradmin : "+userAdmin.toString());

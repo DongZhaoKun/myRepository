@@ -10,5 +10,7 @@ public interface SysLogService {
 
         Integer insert(SysLog sysLog);
 
+        List<SysLog> sysLogList(String operation,Integer pageNum,Integer pageSize);
+
 
 }

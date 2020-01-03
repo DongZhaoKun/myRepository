@@ -65,7 +65,7 @@ public class UserLoginController {
     }
     @GetMapping("/logout")
     public CommonResult logout(){
-        SecurityUtils.getSubject().logout();
+//        SecurityUtils.getSubject().logout();
         return  CommonResult.success(null);
     }
     @GetMapping("/401")
@@ -77,10 +77,9 @@ public class UserLoginController {
 
     }
     @GetMapping("/test")
-    @RequiresPermissions("sys:user:test")
-    public CommonResult test(){
+    public CommonResult test(@RequestParam String str){
 
-        return  CommonResult.success("test");
+        return  CommonResult.success(str);
 
     }
 }

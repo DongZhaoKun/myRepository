@@ -1,85 +1,39 @@
 package com.dzk.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.dzk.commonent.SysLog;
+import com.dzk.model.SysLog;
 import com.dzk.model.UserAdmin;
+import com.dzk.service.SysLogService;
 import com.dzk.service.UserAdminService;
-import com.dzk.shiro.JWTToken;
 import com.dzk.utils.CommonResult;
 import com.dzk.utils.JWTUtil;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.*;
-import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.crypto.hash.Md5Hash;
-import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/sys/user")
-public class UserLoginController {
+@RequestMapping("/sys/log")
+public class SysLogController {
     @Autowired
-    private UserAdminService userAdminService;
+    private SysLogService sysLogService;
 
-    @Autowired
-    private JWTUtil jwtUtil;
-    @PostMapping("/register")
-    public CommonResult register(@RequestBody UserAdmin userAdminParam){
 
-        UserAdmin userAdmin = userAdminService.register(userAdminParam);
+    @PostMapping("/list")
+    public CommonResult list(@RequestParam(value = "opration",required = false)  String opration,
+                             @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                             @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum){
 
-        if(userAdmin == null){
-            return CommonResult.success(null);
+        List<SysLog> sysLogs = sysLogService.sysLogList(opration,pageNum,pageSize);
+
+        if(sysLogs == null){
+            return CommonResult.failed(null);
         }
-        return  CommonResult.success("注册成功");
+        return  CommonResult.success(sysLogs);
     }
-    @SysLog("登陆")
-    @PostMapping("/login")
-    public CommonResult login(@RequestBody UserAdmin userAdminParam){
 
-            UserAdmin userAdmin = userAdminService.queryByName(userAdminParam.getUsername());
-
-            if(userAdmin == null || !userAdmin.getPassword().equals(new Md5Hash(userAdminParam.getPassword(),
-                    userAdmin.getSalt(), 2).toString())){
-                return CommonResult.viladateFailed("用户名或密码错误");
-            }
-            if(userAdmin.getStatus() != 0){
-                return CommonResult.failed("账号被锁定",null);
-            }
-            String token = jwtUtil.generateToken(userAdmin);
-            return  CommonResult.success(token);
-    }
-    @GetMapping("/info")
-//    @RequiresPermissions("sys:user:info")
-    public CommonResult userInfo(){
-//        String userName = jwtUtil.getUserNameFromToken(token);
-//        UserAdmin userAdmin = userAdminService.queryByName(userName);
-        Map<String,Object> map = new HashMap<>();
-        map.put("roles", "[test]");
-        return  CommonResult.success(map);
-    }
-    @GetMapping("/logout")
-    public CommonResult logout(){
-        SecurityUtils.getSubject().logout();
-        return  CommonResult.success(null);
-    }
-    @GetMapping("/401")
-    @RequiresPermissions("test401")
-    public CommonResult result(){
-
-        return  CommonResult.unauthorized(null);
-
-
-    }
-    @GetMapping("/test")
-    public CommonResult test(@RequestParam String str){
-
-        return  CommonResult.success(str);
-
-    }
 }

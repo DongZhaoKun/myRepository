@@ -1,0 +1,18 @@
+GET http://localhost:6696/sys/user/test?str=dzk
+Accept: */*
+Cache-Control: no-cache
+Authorization: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImNyZWF0ZWQiOjE1Nzc2NzEwMjc4NjAsImV4cCI6MTU3ODI3NTgyN30.BY3hNpSyiaz08TFb3N4XDagiGA6Jtgek49pjrzfSbi1urL89qA9WZ5R0T5I26R937OKcfIJqIZuMlZcCWLvDrw
+
+<> 2019-12-30T024934.200.json
+
+###
+
+GET http://localhost:6696/sys/user/test
+Accept: */*
+Cache-Control: no-cache
+Authorization: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImNyZWF0ZWQiOjE1Nzc2NzEwMjc4NjAsImV4cCI6MTU3ODI3NTgyN30.BY3hNpSyiaz08TFb3N4XDagiGA6Jtgek49pjrzfSbi1urL89qA9WZ5R0T5I26R937OKcfIJqIZuMlZcCWLvDrw
+
+<> 2019-12-30T024852.400.json
+
+###
+

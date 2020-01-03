@@ -58,7 +58,8 @@ public class shiroConfig {
 
         filterRuleMap.put("/statics/**", "anon");
         filterRuleMap.put("/favicon.ico", "anon");
-//        filterRuleMap.put("/**","jwt");
+        filterRuleMap.put("/druid/**", "anon");
+        filterRuleMap.put("/**","jwt");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterRuleMap);
 
         return shiroFilterFactoryBean;
